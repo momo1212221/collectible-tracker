@@ -7,7 +7,6 @@
 
 namespace {
 openrac::Mod* g=nullptr;
-openrac::rac1::GoldBolts_CountCollected::fn gold_count=nullptr;
 std::uint16_t previous=0;
 bool requested=false, auto_show=true;
 std::uint32_t loads=std::numeric_limits<std::uint32_t>::max();
@@ -20,16 +19,15 @@ void show(){
         else if(m.oclass==750) ++info;
         else if(m.oclass==1559) ++skill;
     }
-    const int total=gold_count!=nullptr ? gold_count() : 0;
+    auto count=g->original<openrac::rac1::GoldBolts_CountCollected>();
+    const int total=count!=nullptr ? count() : 0;
     if(g->has_notice()) g->play_notice(qol::summary(total,gold,info,skill));
 }
 }
 void load(openrac::Mod& mod){
     if(mod.game()!="rac1" || !mod.has_world()) throw openrac::Error("Collectible Tracker requires RAC1 interface 1.9+");
     g=&mod; auto_show=mod.setting<bool>("show_on_level_start");
-    gold_count=mod.required_function<openrac::rac1::GoldBolts_CountCollected::fn>(
-        openrac::rac1::GoldBolts_CountCollected::name
-    );
+    mod.hook<openrac::rac1::GoldBolts_CountCollected>([](auto original){ return original(); });
     mod.on_pad([](int port,std::uint8_t* report,int size){
         if(port!=0 || report==nullptr || size<2) return;
         const auto now=qol::pad_buttons(report);
@@ -46,4 +44,4 @@ void load(openrac::Mod& mod){
     });
     mod.info("L2+R2+Triangle shows collectible summary");
 }
-OPENRAC_MOD_CPP("collectible-tracker","0.1.0",load)
+OPENRAC_MOD_CPP("collectible-tracker","0.1.1",load)
