@@ -33,6 +33,7 @@ void load(openrac::Mod& mod){
         const auto now=qol::pad_buttons(report);
         const auto mask=static_cast<std::uint16_t>(OPENRAC_PAD_L2|OPENRAC_PAD_R2|OPENRAC_PAD_TRIANGLE);
         if(qol::combo_pressed(now,previous,mask)) requested=true;
+        if((now&mask)==mask) qol::consume_buttons(report,mask);
         previous=now;
     });
     mod.on_frame([]{
@@ -44,4 +45,4 @@ void load(openrac::Mod& mod){
     });
     mod.info("L2+R2+Triangle shows collectible summary");
 }
-OPENRAC_MOD_CPP("collectible-tracker","0.1.1",load)
+OPENRAC_MOD_CPP("collectible-tracker","0.1.2",load)
