@@ -13,9 +13,6 @@
   "id": "collectible-tracker",
   "name": "Collectible Tracker",
   "description": "Shows total collected gold bolts plus remaining live gold bolts, infobots and skill-point triggers in the current level.",
-  "hooks": [
-    "rac1.gold_bolt.count_collected"
-  ],
   "settings": [
     {
       "key": "show_on_level_start",
